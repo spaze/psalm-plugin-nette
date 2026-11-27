@@ -1,0 +1,18 @@
+{
+	"description": "Installs the plugin next to psalm.phar, as a project that uses both would, for the acceptance tests to run with it",
+	"repositories": [
+		{
+			"type": "path",
+			"url": "../.."
+		}
+	],
+	"require": {
+		"latte/latte": "^3.0",
+		"nette/application": "^3.2",
+		"nette/http": "^3.3",
+		"nette/security": "^3.2",
+		"nette/tester": "^2.7",
+		"psalm/phar": "^7.12",
+		"spaze/psalm-plugin-nette": "@dev"
+	}
+}

@@ -1,0 +1,7 @@
+# Runs the scenarios with psalm.phar from tests/_phar, with the plugin loaded by the path to its file
+modules:
+    config:
+        \Weirdan\Codeception\Psalm\Module:
+            psalm_path: tests/_phar/vendor/bin/psalm.phar
+        \Spaze\Psalm\Nette\Tests\Helper\Acceptance:
+            psalm: phar

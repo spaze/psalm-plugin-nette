@@ -1,0 +1,22 @@
+parameters:
+	paths:
+		- src
+		- tests
+	excludePaths:
+		analyse:
+			- tests/_support/_generated
+		analyseAndScan:
+			- tests/_output (?)
+			- tests/_phar (?)
+			- tests/_run (?)
+	level: max
+	checkMissingOverrideMethodAttribute: true
+
+includes:
+	- vendor/phpstan/phpstan/conf/bleedingEdge.neon
+	- vendor/phpstan/phpstan-strict-rules/rules.neon
+	- vendor/spaze/phpstan-disallowed-calls/extension.neon
+	- vendor/spaze/phpstan-disallowed-calls/disallowed-dangerous-calls.neon
+	- vendor/spaze/phpstan-disallowed-calls/disallowed-execution-calls.neon
+	- vendor/spaze/phpstan-disallowed-calls/disallowed-insecure-calls.neon
+	- vendor/spaze/phpstan-disallowed-calls/disallowed-loose-calls.neon

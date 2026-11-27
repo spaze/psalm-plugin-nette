@@ -1,0 +1,7 @@
+/composer.lock
+/tests/_output/
+/tests/_phar/composer.lock
+/tests/_phar/vendor/
+/tests/_run/
+/tests/_support/_generated/
+/vendor/

@@ -1,0 +1,8 @@
+# Each scenario writes its files to tests/_run and runs Psalm there, with the plugin loaded by its class name
+actor: AcceptanceTester
+modules:
+    enabled:
+        - Cli
+        - Filesystem
+        - \Weirdan\Codeception\Psalm\Module
+        - \Spaze\Psalm\Nette\Tests\Helper\Acceptance

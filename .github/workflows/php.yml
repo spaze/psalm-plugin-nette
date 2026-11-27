@@ -1,0 +1,110 @@
+name: PHP Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint-phpcs-phpstan-psalm:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version:
+          - "8.2"
+          - "8.3"
+          - "8.4"
+          - "8.5"
+          - "8.6"
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        persist-credentials: false
+    - name: Install PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        coverage: none
+        php-version: ${{ matrix.php-version }}
+    - name: PHP info
+      run: |
+        php -v
+        php -m
+    - name: Validate composer.json
+      run: composer validate --strict --no-interaction
+    - name: Install dependencies
+      run: composer update --no-progress --no-interaction
+    - name: Run linter
+      run: composer lint
+    - name: Run PHPCS
+      run: composer phpcs
+    - name: Run PHPStan
+      run: composer phpstan
+    - name: Run Psalm
+      run: composer psalm
+
+  # The scenarios run with Psalm installed from source, with the plugin loaded by its class name
+  acceptance:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version:
+          - "8.2"
+          - "8.3"
+          - "8.4"
+          - "8.5"
+          - "8.6"
+        psalm-version:
+          - "7.12.0" # The oldest one the psalm/psalm-plugin-api requirement in composer.json allows
+          - "^7.12"
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        persist-credentials: false
+    - name: Install PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        coverage: none
+        php-version: ${{ matrix.php-version }}
+    - name: Install dependencies
+      run: |
+        composer require --dev --no-update "vimeo/psalm:${{ matrix.psalm-version }}"
+        composer update --no-progress --no-interaction
+    - name: Psalm version
+      run: vendor/bin/psalm --version
+    - name: Run acceptance tests
+      run: composer acceptance
+
+  # The scenarios run with psalm.phar and the plugin installed next to it in tests/_phar, with the plugin loaded by the path to its file
+  acceptance-phar:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version:
+          - "8.2"
+          - "8.3"
+          - "8.4"
+          - "8.5"
+          - "8.6"
+        psalm-version:
+          - "7.12.0" # The oldest one the psalm/phar conflict in composer.json allows
+          - "^7.12"
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        persist-credentials: false
+    - name: Install PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        coverage: none
+        php-version: ${{ matrix.php-version }}
+    - name: Install dependencies
+      run: |
+        composer update --no-progress --no-interaction
+        composer --working-dir=tests/_phar require --no-update "psalm/phar:${{ matrix.psalm-version }}"
+    - name: Run acceptance tests
+      run: composer acceptance-phar
+    - name: Psalm version
+      run: tests/_phar/vendor/bin/psalm.phar --version
